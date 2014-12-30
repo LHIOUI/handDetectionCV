@@ -234,10 +234,8 @@ int findBiggestContour(vector<vector<Point> > contours){
 }
 
 void myDrawContours(MyImage *m,HandGesture *hg){
+
 	drawContours(m->src,hg->hullP,hg->cIdx,cv::Scalar(200,0,0),2, 8, vector<Vec4i>(), 0, Point());
-
-
-
 
 	rectangle(m->src,hg->bRect.tl(),hg->bRect.br(),Scalar(0,0,200));
 	vector<Vec4i>::iterator d=hg->defects[hg->cIdx].begin();
@@ -249,32 +247,48 @@ void myDrawContours(MyImage *m,HandGesture *hg){
 		for(int i=0;i<3;i++)
 			channels.push_back(m->bw);
 		merge(channels,result);
-	//	drawContours(result,hg->contours,hg->cIdx,cv::Scalar(0,200,0),6, 8, vector<Vec4i>(), 0, Point());
-		drawContours(result,hg->hullP,hg->cIdx,cv::Scalar(0,0,250),10, 8, vector<Vec4i>(), 0, Point());
-
 		
+		#ifdef DEBUG
+			drawContours(result,hg->contours,hg->cIdx,cv::Scalar(0,200,0),6, 8, vector<Vec4i>(), 0, Point());
+		#endif
+
+	//Blue contour
+	drawContours(result,hg->hullP,hg->cIdx,cv::Scalar(0,0,250),10, 8, vector<Vec4i>(), 0, Point());
+
+	//Get moments to compute area
+	if( !hg->hullP.empty() ) {
+		int i; 
+
+		for(i=0;i<hg->hullP.size();i++) {
+			if(!hg->hullP[i].empty())
+		    	cout << " Area: " << contourArea(hg->hullP[i]) << endl;
+		}
+	}
+
 	while( d!=hg->defects[hg->cIdx].end() ) {
    	    Vec4i& v=(*d);
 	    int startidx=v[0]; Point ptStart(hg->contours[hg->cIdx][startidx] );
    		int endidx=v[1]; Point ptEnd(hg->contours[hg->cIdx][endidx] );
   	    int faridx=v[2]; Point ptFar(hg->contours[hg->cIdx][faridx] );
 	    float depth = v[3] / 256;
-   /*	
-		line( m->src, ptStart, ptFar, Scalar(0,255,0), 1 );
-	    line( m->src, ptEnd, ptFar, Scalar(0,255,0), 1 );
-   		circle( m->src, ptFar,   4, Scalar(0,255,0), 2 );
-   		circle( m->src, ptEnd,   4, Scalar(0,0,255), 2 );
-   		circle( m->src, ptStart,   4, Scalar(255,0,0), 2 );
-*/
+   	
+	   	#ifdef DEBUG
+			line( m->src, ptStart, ptFar, Scalar(0,255,0), 1 );
+		    line( m->src, ptEnd, ptFar, Scalar(0,255,0), 1 );
+	   		circle( m->src, ptFar,   4, Scalar(0,255,0), 2 );
+	   		circle( m->src, ptEnd,   4, Scalar(0,0,255), 2 );
+	   		circle( m->src, ptStart,   4, Scalar(255,0,0), 2 );
+	   	#endif
    		circle( result, ptFar,   9, Scalar(0,205,0), 5 );
-		
 		
 	    d++;
 
    	 }
-//	imwrite("./images/contour_defects_before_eliminate.jpg",result);
-
+   	#ifdef VERBOSE_JPG
+		imwrite("./images/contour_defects_before_eliminate.jpg",result);
+	#endif
 }
+
 
 void makeContours(MyImage *m, HandGesture* hg){
 	Mat aBw;
@@ -309,6 +323,7 @@ int main(){
 	HandGesture hg;
 	init(&m);		
 	m.cap >>m.src;
+
     namedWindow("img1",CV_WINDOW_KEEPRATIO);
 	out.open("out.avi", CV_FOURCC('M', 'J', 'P', 'G'), 15, m.src.size(), true);
 	waitForPalmCover(&m);
@@ -329,6 +344,7 @@ int main(){
 		hg.getFingerNumber(&m);
 		showWindows(m);
 		out << m.src;
+
 		//imwrite("./images/final_result.jpg",m.src);
     	if(cv::waitKey(30) == char('q')) break;
 	}

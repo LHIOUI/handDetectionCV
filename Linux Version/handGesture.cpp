@@ -236,14 +236,14 @@ void HandGesture::checkForOneFinger(MyImage *m){
    	    Point v=(*d);
 		if(v.y<highestP.y){
 			highestP=v;
-			cout<<highestP.y<<endl;
+			//cout<<highestP.y<<endl;
 		}
 		d++;	
 	}int n=0;
 	d=hullP[cIdx].begin();
 	while( d!=hullP[cIdx].end() ) {
    	    Point v=(*d);
-			cout<<"x " << v.x << " y "<<  v.y << " highestpY " << highestP.y<< "ytol "<<yTol<<endl;
+			//cout<<"x " << v.x << " y "<<  v.y << " highestpY " << highestP.y<< "ytol "<<yTol<<endl;
 		if(v.y<highestP.y+yTol && v.y!=highestP.y && v.x!=highestP.x){
 			n++;
 		}
