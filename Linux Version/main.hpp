@@ -71,5 +71,11 @@ Serial interface ports:
 //because hand position did not change!
 #define STD_TRESH		7500
 
+// SSH variables
+#define USERNAME "vlad.traista"
+#define HOSTNAME "fep.grid.pub.ro"
+#define PASSWORD "ubuntu"
+#define PUBKEY_FILE "/home/vlad/.ssh/id_rsa.pub"
+#define PRIVKEY_FILE "/home/vlad/.ssh/id_rsa"
 
 #endif

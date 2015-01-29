@@ -13,7 +13,7 @@ handGesture.o: handGesture.cpp
 roi.o: roi.cpp
 
 all:
-	g++ -o manusa main.cpp myImage.cpp handGesture.cpp roi.cpp `pkg-config --cflags --libs opencv` -DDEBUG
+	g++ -o manusa main.cpp myImage.cpp handGesture.cpp roi.cpp `pkg-config --cflags --libs opencv` -DDEBUG -lssh
 
 clean:
 	rm -f *~ *.o manusa
